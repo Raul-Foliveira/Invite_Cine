@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cinezinho? 🎬</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 15px;
+            position: relative;
+        }
+
+        /* Elementos flutuantes de fundo */
+        .background-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .floating-item {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.2;
+            animation: floatUp 6s infinite linear;
+            bottom: -50px;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.2; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Card principal */
+        .card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 30px 20px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1 {
+            color: #2b2b2b;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            font-weight: 700;
+        }
+
+        p {
+            color: #555;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .emoji-header {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* ZONA DE JOGO (Onde os botões rodam sem tocar no texto) */
+        .playground-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-sim {
+            background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
+            color: white;
+            box-shadow: 0 6px 15px rgba(66, 230, 149, 0.3);
+            display: block;
+            width: 80%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 4;
+        }
+
+        .btn-sim:active {
+            transform: scale(0.95);
+        }
+
+        .btn-nao {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+            box-shadow: 0 6px 15px rgba(255, 65, 108, 0.25);
+            
+            position: absolute;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            z-index: 3;
+            
+            /* Movimento suave e gostoso de ver */
+            transition: top 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+                        left 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.2s ease;
+        }
+
+        /* Inputs do Formulário da Tela 2 */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: #444;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="date"]:focus, input[type="time"]:focus {
+            border-color: #ff758c;
+            background: #fff;
+        }
+
+        /* Estilização do Termo de Consentimento */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            text-align: left;
+            margin: 20px 0 10px 0;
+            background: rgba(255, 117, 140, 0.08);
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px dashed rgba(255, 117, 140, 0.4);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 3px;
+            accent-color: #ff758c;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 0.82rem;
+            color: #555;
+            font-weight: 500;
+            line-height: 1.4;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .btn-confirmar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+            margin-top: 5px;
+        }
+
+        /* Alerta interno do botão Não */
+        .custom-popup {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-animation" id="bgAnimation"></div>
+
+    <div id="tela1" class="card">
+        <div class="emoji-header">🍿🎬</div>
+        <h1>Depois daquele japonês insano...</h1>
+        <p>Acho que uma sessão de cinema é a única forma justa de manter o nível, né? Você topa? 👀</p>
+        
+        <div class="playground-container" id="playground">
+            <button class="btn-sim" onclick="mágicaDoSim()">Com certeza! ✨</button>
+            <button class="btn-nao" id="btnNao">Não</button>
+        </div>
+        
+        <div id="popupErro" class="custom-popup hidden">
+            ⚠️ <b>Erro no sistema:</b> O botão "Não" quebrou de tanto fugir. Por favor, colabore e clique no botão verde! 😜
+        </div>
+    </div>
+
+    <div id="tela2" class="card hidden">
+        <div class="emoji-header">🗓️</div>
+        <h1>Aí sim! Sabia que não ia resistir 😂</h1>
+        <p>Agora diz aí, qual dia e hora fica melhor para você?</p>
+        
+        <div class="form-group">
+            <label for="data">Qual o melhor dia?</label>
+            <input type="date" id="data" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="hora">E o horário ideal?</label>
+            <input type="time" id="hora" required>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="termo">
+            <label for="termo">Estou ciente e aceito que o acompanhante é gente boa e que tenho direito de roubar a pipoca dele durante o filme. 🍿📝</label>
+        </div>
+
+        <button class="btn-confirmar" onclick="enviarWhatsApp()">Gerar Ingresso! 🚀</button>
+    </div>
+
+    <script>
+        // SEU WHATSAPP (DDD + Número)
+        const SEU_NUMERO = "5511999999999"; 
+
+        // Partículas flutuando no fundo
+        const bg = document.getElementById('bgAnimation');
+        const emojis = ['🍿', '🎬', '✨', '🥤', '❤️'];
+        for (let i = 0; i < 12; i++) {
+            let item = document.createElement('div');
+            item.className = 'floating-item';
+            item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.animationDelay = Math.random() * 5 + 's';
+            item.style.fontSize = (Math.random() * 0.8 + 1) + 'rem';
+            bg.appendChild(item);
+        }
+
+        const btnNao = document.getElementById('btnNao');
+        const popupErro = document.getElementById('popupErro');
+        let contagemFugas = 0;
+        const maxFugas = 4;
+
+        function fugirBotao() {
+            if (contagemFugas < maxFugas) {
+                const playground = document.getElementById('playground');
+                
+                if (contagemFugas === 0) {
+                    btnNao.style.transform = "none";
+                    btnNao.style.width = "auto"; 
+                    btnNao.style.padding = "12px 25px";
+                }
+
+                const maxX = playground.clientWidth - btnNao.clientWidth;
+                const maxY = playground.clientHeight - btnNao.clientHeight;
+
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+
+                btnNao.style.left = randomX + "px";
+                btnNao.style.top = randomY + "px";
+
+                contagemFugas++;
+            } else {
+                popupErro.classList.remove('hidden');
+            }
+        }
+
+        btnNao.addEventListener('mouseover', fugirBotao);
+        btnNao.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            fugirBotao();
+        });
+
+        // Nova função para acionar os confetes antes de mudar de tela
+        function mágicaDoSim() {
+            // Dispara rajada de confetes da esquerda e da direita
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            // Dá um atraso de 800ms para ela ver os confetes caindo antes de trocar de tela
+            setTimeout(proximaTela, 800);
+        }
+
+        function proximaTela() {
+            document.getElementById('tela1').classList.add('hidden');
+            document.getElementById('tela2').classList.remove('hidden');
+            
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data').min = hoje;
+        }
+
+        function enviarWhatsApp() {
+            const dataInput = document.getElementById('data').value;
+            const horaInput = document.getElementById('hora').value;
+            const termoInput = document.getElementById('termo').checked;
+
+            if (!dataInput || !horaInput) {
+                alert("Escolhe o dia e o horário primeiro! 😉");
+                return;
+            }
+
+            // Validação do Termo de Consentimento
+            if (!termoInput) {
+                alert("Ei! Você esqueceu de assinar o contrato da pipoca! Marque o quadradinho lá. 🍿😜");
+                return;
+            }
+
+            const dataFormatada = dataInput.split('-').reverse().join('/');
+            
+            // Mensagem formatada incluindo o contrato aceito!
+            const mensagem = `Cine fechadíssimo! 🎬🍿\n\nJá tá marcado na minha agenda pra não ter erro, ó:\n🗓️ Dia: ${dataFormatada}\n⏰ Horário: ${horaInput}\n\n📝 Nota: Termo de compromisso da pipoca devidamente aceito e assinado, boraaa! 😉`;
+            
+            const urlWhats = `https://api.whatsapp.com/send?phone=${SEU_NUMERO}&text=${encodeURIComponent(mensagem)}`;
+            window.location.href = urlWhats;
+        }
+    </script>
+</body>
+</html>
