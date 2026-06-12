@@ -97,7 +97,7 @@
             50% { transform: scale(1.08); }
         }
 
-        /* ZONA DE JOGO (Onde os botões rodam sem tocar no texto) */
+        
         .playground-container {
             position: relative;
             width: 100%;
@@ -149,7 +149,6 @@
                         transform 0.2s ease;
         }
 
-        /* Inputs do Formulário da Tela 2 */
         .form-group {
             margin-bottom: 15px;
             text-align: left;
@@ -250,7 +249,7 @@
         </div>
         
         <div id="popupErro" class="custom-popup hidden">
-            ⚠️ <b>Erro no sistema:</b> O botão "Não" quebrou de tanto fugir. Por favor, colabore e clique no botão verde! 😜
+            ⚠️ <b>Erro no sistema:</b> O botão "Não" quebrou de tanto fugir. Que tal tentar clicar no botão verde ein? haha! 😜
         </div>
     </div>
 
@@ -280,7 +279,6 @@
     <script>
         const SEU_NUMERO = "5511989012481"; 
 
-        // Partículas flutuando no fundo
         const bg = document.getElementById('bgAnimation');
         const emojis = ['🍿', '🎬', '✨', '🥤', '❤️'];
         for (let i = 0; i < 12; i++) {
@@ -331,7 +329,7 @@
 
         // Nova função para acionar os confetes antes de mudar de tela
         function mágicaDoSim() {
-            // Dispara rajada de confetes da esquerda e da direita
+            
             confetti({
                 particleCount: 100,
                 spread: 70,
@@ -369,7 +367,7 @@
             const dataFormatada = dataInput.split('-').reverse().join('/');
             
             // Mensagem formatada incluindo o contrato aceito!
-            const mensagem = `Cine fechadíssimo! 🎬🍿\n\nJá tá marcado na minha agenda pra não ter erro, ó:\n🗓️ Dia: ${dataFormatada}\n⏰ Horário: ${horaInput}\n\n📝 Nota: Termo de compromisso da pipoca devidamente aceito e assinado, boraaa! 😉`;
+            const mensagem = `Cine fechadíssimo! 🎬🍿\n\nJá tá marcado na minha agenda pra não ter erro, ó:\n🗓️ Dia: ${dataFormatada}\n⏰ Horário: ${horaInput}\n\n📝 Nota: Termo de compromisso da pipoca devidamente aceito e assinado, boraaa!!`;
             
             const urlWhats = `https://api.whatsapp.com/send?phone=${SEU_NUMERO}&text=${encodeURIComponent(mensagem)}`;
             window.location.href = urlWhats;
